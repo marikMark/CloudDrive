@@ -8,16 +8,12 @@ const FileService = require('../services/fileService');
 
 class AuthController {
     async checkUser(req, res) {
-        const ipAddress = req.ip.split(':').pop();
+        const ipAddress = '127.0.0.1';
         const userId = uuid.v4();
 
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
         const candidate = await User.findOne({where: {ipAddress}});
         if(candidate) {
             const token = jwt.sign({userId: candidate.userId}, process.env.SECRET_KEY, {expiresIn: '1w'});
-            await sleep(1000);
             return await res.json({user: candidate, token});
         }
 
